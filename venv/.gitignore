@@ -158,7 +158,7 @@ cmake-build-*/
 out/
 
 # mpeltonen/sbt-idea plugin
-.idea_modules/
+.idea_modules/x
 
 # JIRA plugin
 atlassian-ide-plugin.xml
