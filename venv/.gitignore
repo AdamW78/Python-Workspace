@@ -1,2 +1,4 @@
 # created by virtualenv automatically
 bin/*
+venv/lib/python3.10/*
+pyvenv.cfg

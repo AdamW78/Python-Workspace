@@ -11,3 +11,4 @@ except ValueError:
         print(float(userAge)+1.0)
 else:
     print(int(userAge)+1)
+    print()
