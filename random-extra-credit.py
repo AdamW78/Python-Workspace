@@ -8,6 +8,18 @@ starting_money = 25
 current_money = starting_money
 # Initialize counter variable for number of items purchased
 num_items_purchased = 0
+
+
+def buy_item(cur_money, cur_num_items, cur_item_pruce):
+    # Subtract item price from current money, format to X.XX
+    cur_money -= current_item_price
+    cur_money = round(cur_money, 2)
+    num_items_purchased += 1
+    # Print money remaining and last purchased item cost
+    print(f"Purchased an item for ${current_item_price:.2f}! "
+          f"Your money remaining is ${current_money:.2f}.")
+
+
 # While the user's current amount of money is greater than zero
 while current_money > 0:
     # Generate random item price in X.XX format
@@ -15,13 +27,7 @@ while current_money > 0:
     # Check if the user purchase the current item
     if current_money > current_item_price:
         # If current money is greater than random item price
-        # Subtract item price from current money, format to X.XX
-        current_money -= current_item_price
-        current_money = round(current_money, 2)
-        num_items_purchased += 1
-        # Print money remaining and last purchased item cost
-        print(f"Purchased an item for ${current_item_price:.2f}! "
-              f"Your money remaining is ${current_money:.2f}.")
+        buy_item()
     else:
         # If current money is insufficient to purchase current item
         # Ask if they want to try to scan more items
@@ -40,3 +46,5 @@ while current_money > 0:
 # Print final money value and number of items purchased
 print(f"You finished scanning items with ${current_money:.2f}!")
 print(f"You bought {num_items_purchased} items!")
+
+main()
