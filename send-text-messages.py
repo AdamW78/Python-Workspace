@@ -23,7 +23,7 @@ CARRIERS = {
 
 EMAIL = "Code.AdamW78@gmail.com"
 PASSWORD = "ytlrdemjuebgloyi"
-PHONE_NUMBER = "5712629202"
+PHONE_NUMBER = "XXXXXXXX"
 CARRIER = "att"
 MESSAGE = "This is a test text message."
 
