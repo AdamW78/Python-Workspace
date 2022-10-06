@@ -38,12 +38,15 @@ def carrier_setup():
     if isinstance(carrier_list, str):
         return carrier_list
     else:
-        return get_carrier_selection(carrier_list)
+        close_matches = get_carrier_selection(carrier_list)
+        if close_matches == 0:
+            return 0
+        return
 
 
 def get_carrier_selection(close_matches):
     print("Could not find your exact input in our carrier list.")
-    for i in range(len(close_matches) - 1):
+    for i in range(len(close_matches)):
         if i == 0:
             print(f"Closest match was: \"{close_matches[0]}\"")
         else:
@@ -51,28 +54,27 @@ def get_carrier_selection(close_matches):
     yes_no = input("Is one of these correct? Enter \"y\" for yes or \"n\" for no: ").casefold()
     if yes_no == "n":
         print("Unable to find your cell carrier. Exiting...")
-        return 0
+        exit(0)
     elif yes_no == "y":
-        for k in range(len(close_matches)-1):
+        for k in range(len(close_matches)):
             print(f"{k + 1}. {close_matches[k]}")
         number_choice = input("Please select the number of your cell carrier: ")
-        num = -1
-        int (number_choice)
         try:
             num = int(number_choice)
-        except:
-            print(f"Error: Input \"{one_two_three}\" is invalid. Exiting...")
-            return 0
-        if num > len(close_matches):
-            print(f"Error: Input \"{one_two_three}\" is not a listed carrier. Exiting...")
-            return 0
+        except ValueError:
+            print(f"Error: Input \"{number_choice}\" is invalid. Exiting...")
+            raise TypeError(f"User input \"{number_choice}\" failed to convert from string to integer.")
+        if num > len(close_matches) or num <= 0:
+            print(f"Error: Input \"{number_choice}\" is not a listed carrier. Exiting...")
+            raise IndexError(f"User input \"{number_choice}\" was out of bounds for cell carrier list.")
         else:
+            print(len(close_matches))
             carrier_choice = close_matches[num-1]
             print(f"Chosen carrier: {carrier_choice}")
             return carrier_choice
     else:
         print(f"Error: Input \"{yes_no}\" is invalid. Exiting...")
-        return 0
+        raise ValueError("User input \"{yes_no}\" was invalid. Please enter \"y\" or \"n\".")
 
 
 def search_carriers():
