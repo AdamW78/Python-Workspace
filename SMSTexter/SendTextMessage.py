@@ -37,6 +37,8 @@ def send_message():
 
 def setup():
     """
+    Initial setup method for sending texts
+
     Creates auth object with email provided from Constants file and app-password supplied from Constants file
     Opens a connection to gmail server
     Logs into gmail server
@@ -51,20 +53,42 @@ def setup():
 
 def carrier_setup():
     """
+    Calls search_carriers() to return either the found carrier or list of close matches to Constants.CARRIER
+    Checks to see if search_carriers() returned a list or a single carrier
+    If a single carrier, returns just that carrier
+    If a list, calls get_carrier_selection(carrier_list) to obtain a single cell carrier - returns this carrier
+    If 0, returns 0 - This means no similar carriers were found
+    :return: 0 if no carrier was found, or user-selected cell carrier
 
-    :return: 0 if no carrier was found or
     """
     carrier_list = search_carriers()
     if isinstance(carrier_list, str):
         return carrier_list
     else:
-        close_matches = get_carrier_selection(carrier_list)
-        if close_matches == 0:
+        carrier_selection = get_carrier_selection(carrier_list)
+        if carrier_selection == 0:
             return 0
-        return
+        return carrier_selection
 
 
 def get_carrier_selection(close_matches):
+    """
+    Takes in a list of close matches for a cell carrier and gets the user to select the one they would like to text
+
+    Prints "Could not find your exact input in our carrier list.", iterates through close_matches and prints each string
+    Asks for yes/no input ("Is one of these correct? Enter \"y\" for yes or \"n\" for no: ") - is one of the printed values desired cell carrier
+    If no, exit the program
+    If yes, iterate through and print a numbered version of each string in list close_matches
+    Asks for user input (numerical) to select the desired cell carrier
+    Returns selected carrier
+    :param close_matches: List of close matches returned from search_carriers() - list of strings
+    :return: User carrier selection as string
+    :raises TypeError Asks for a numerical input choice, this is raised if the input (string) cannot be converted to an int (usuallu means user did not input a number)
+    :raises IndexError If the numerical input provided is out of bounds of list of options provided, this is raised
+    :raises ValueError Asks for a yes/no user input, raised if user input is NOT: "Y"/"y" or "N"/"n"
+    :
+    """
+
     print("Could not find your exact input in our carrier list.")
     for i in range(len(close_matches)):
         if i == 0:
