@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import Constants
-from SMSTexter import DictChecker
+from SMSTexter import DictChecker, DictReader
 
 
 def open_connection(site):
@@ -70,10 +70,17 @@ def create_carrier_dictionary(body):
     return text_to_mail_addresses
 
 
+def fetch_carrier_dictionary_local() -> dict:
+    carrier_dict_file = DictChecker.get_csv_dict()
+    return DictReader.read(carrier_dict_file)
+
+
 def carrier_dictionary():
     if Constants.DEBUG or (not DictChecker.has_csv_dict()):
         _carrier_dictionary = create_carrier_dictionary(open_connection(Constants.WEBSITE))
-    else:
-        DictReader.read("carrierdict.csv")
-    return _carrier_dictionary
+        if Constants.DEBUG:
+            return fetch_carrier_dictionary_local()
 
+    else:
+        return fetch_carrier_dictionary_local()
+    return _carrier_dictionary
