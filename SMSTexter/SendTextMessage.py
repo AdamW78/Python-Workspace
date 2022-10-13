@@ -131,7 +131,7 @@ def search_carriers():
     Otherwise, return a list of the 5 most lexicographically similar strings to Constants.CARRIER from carrier_dictionary
     :return: List close_matches of 5 most lexicographically similar strings to Constants.Carrier OR exact match
     """
-    user_carrier = Constants.CARRIERs
+    user_carrier = Constants.CARRIER
     keys = list(carrier_dictionary.keys())
     if user_carrier in keys:
         return user_carrier
