@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
 import Constants
 
 

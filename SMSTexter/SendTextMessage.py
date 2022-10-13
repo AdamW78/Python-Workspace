@@ -17,6 +17,15 @@ server = smtplib.SMTP("smtp.gmail.com", 587)
 
 
 def send_message():
+    """
+    Main method for class, calls helper methods and actually sends text message
+
+    Calls setup() and stores email from which to send text
+    Fetches user's desired cell carrier to text on from carrier_setup()
+    Creates recipient string email address by concatenating inputted phone number
+    and the found email address for texting for selected cell carrier
+    Ex: 1234567890@txt.att.net
+    """
     auth = setup()
     user_carrier = carrier_setup()
     recipient = Constants.PHONE_NUMBER + str(list(carrier_dictionary[user_carrier])[0])
@@ -27,6 +36,13 @@ def send_message():
 
 
 def setup():
+    """
+    Creates auth object with email provided from Constants file and app-password supplied from Constants file
+    Opens a connection to gmail server
+    Logs into gmail server
+    :return: Email address as string from which text will be sent
+
+    """
     auth = (Constants.EMAIL, Constants.PASSWORD)
     server.starttls()
     server.login(auth[0], auth[1])
@@ -34,6 +50,10 @@ def setup():
 
 
 def carrier_setup():
+    """
+
+    :return: 0 if no carrier was found or
+    """
     carrier_list = search_carriers()
     if isinstance(carrier_list, str):
         return carrier_list
