@@ -122,7 +122,16 @@ def get_carrier_selection(close_matches):
 
 
 def search_carriers():
-    user_carrier = Constants.CARRIER
+    """
+    Method to search dictionary of cell carriers to find close matches or exact match for cell carrier from Constants.CARRIER
+
+    Fetches Constants.Carrier
+    Fetches list of cell carriers in carrier_dictionary
+    If Constants.CARRIER is in carrier_dictionary, return Constants.CARRIER
+    Otherwise, return a list of the 5 most lexicographically similar strings to Constants.CARRIER from carrier_dictionary
+    :return: List close_matches of 5 most lexicographically similar strings to Constants.Carrier OR exact match
+    """
+    user_carrier = Constants.CARRIERs
     keys = list(carrier_dictionary.keys())
     if user_carrier in keys:
         return user_carrier
