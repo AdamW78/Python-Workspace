@@ -1,5 +1,4 @@
 from time import sleep
-import plivo
 from os import listdir
 from os import getcwd
 

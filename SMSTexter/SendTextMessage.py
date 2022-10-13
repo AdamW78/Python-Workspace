@@ -12,9 +12,10 @@ import Constants
 import WebScraper
 import difflib
 
-carrier_dictionary = WebScraper.carrier_dictionary()
-server = smtplib.SMTP("smtp.gmail.com", 587)
+from SMSTexter import DictChecker, DictWriter
 
+server = smtplib.SMTP("smtp.gmail.com", 587)
+carrier_dictionary = WebScraper.carrier_dictionary()
 
 def send_message():
     """
@@ -29,10 +30,10 @@ def send_message():
     auth = setup()
     user_carrier = carrier_setup()
     recipient = Constants.PHONE_NUMBER + str(list(carrier_dictionary[user_carrier])[0])
-    try:
-        server.sendmail(auth, recipient, Constants.MESSAGE)
-    except smtplib.SMTPRecipientsRefused:
-        print("Error: Could not send to that address")
+    #try:
+        #server.sendmail(auth, recipient, Constants.MESSAGE)
+    #except smtplib.SMTPRecipientsRefused:
+        #print("Error: Could not send to that address")
 
 
 def setup():

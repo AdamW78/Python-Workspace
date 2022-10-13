@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import Constants
+from SMSTexter import DictChecker
 
 
 def open_connection(site):
@@ -11,8 +12,14 @@ def open_connection(site):
     :return: Body of website from BeautifulSoup
     """
     response = requests.get(site)
+    if Constants.DEBUG:
+        print(f"Response from \"f{site}\" {response}")
     soup = BeautifulSoup(response.content, "html.parser")
+    if Constants.DEBUG:
+        print(f"BeautifulSoup Object Content: {soup}")
     body = soup.body
+    if Constants.DEBUG:
+        print(f"BeautifulSoup Body object: {body}")
     return body
 
 
@@ -25,12 +32,15 @@ def create_carrier_dictionary(body):
     Iterates through the table by each <p> HTML object with style "padding-left: 30px;" (Email address)
     Convert each email from a NavigableString BeautifulSoup object to a string object
     Navigates the previous HTML objects from each email address until a <strong> HTML element is found (Cell carrier)
-    Creates string from each previous
+    Creates string from each previous HTML <p> object until it finds a string with <strong> in it
+    Takes contents of <strong> tag, formats, and updates cur_carrier
+    Use cur_carrier as key for text_to_mail_addresses dict to update values
+    Returns dictionary containing String keys and Lists of string values
     :param body: BeautifulSoup object representing the contents of HTML body tag
     :return: Dictionary object containing cell carriers (strings) and lists of text-to-mail addresses (list of strings)
     """
     table = body.find(class_="container-fluid-max")
-    text_to_mail_addresses = dict({"": []})
+    text_to_mail_addresses = dict()
     for email in table.find_all("p", style="padding-left: 30px;"):
         full_mail_address = str(email.string).split("@")
         cur_carrier = ""
@@ -43,9 +53,13 @@ def create_carrier_dictionary(body):
                 ampersand_search = cur_carrier.find("&amp;")
                 if ampersand_search != -1:
                     cur_carrier = cur_carrier.replace("&amp;", "&")
+                if Constants.DEBUG:
+                    print(f"Found carrier {cur_carrier}, ", end="")
                 break
         try:
             mail_address = "@" + full_mail_address[1]
+            if Constants.DEBUG:
+                print(f"updating with text-to-email address \"{mail_address}\".")
         except IndexError:
             continue
         email_list = []
@@ -57,6 +71,9 @@ def create_carrier_dictionary(body):
 
 
 def carrier_dictionary():
-    carrier_dictionary = create_carrier_dictionary(open_connection(Constants.WEBSITE))
-    return carrier_dictionary
+    if Constants.DEBUG or (not DictChecker.has_csv_dict()):
+        _carrier_dictionary = create_carrier_dictionary(open_connection(Constants.WEBSITE))
+    else:
+        DictReader.read("carrierdict.csv")
+    return _carrier_dictionary
 
