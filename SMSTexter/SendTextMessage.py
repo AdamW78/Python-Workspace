@@ -6,16 +6,16 @@
 # Modified to support multiple senders
 # Modified to simplify for specific use-case (Sending rush text-messages)
 #
-
 import smtplib
 import Constants
 import WebScraper
 import difflib
 
-from SMSTexter import DictChecker, DictWriter
+from SMSTexter import FindCellCarrier
 
 server = smtplib.SMTP("smtp.gmail.com", 587)
 carrier_dictionary = WebScraper.carrier_dictionary()
+
 
 def send_message():
     """
@@ -28,12 +28,12 @@ def send_message():
     Ex: 1234567890@txt.att.net
     """
     auth = setup()
-    user_carrier = carrier_setup()
+    user_carrier = await carrier_setup()
     recipient = Constants.PHONE_NUMBER + str(list(carrier_dictionary[user_carrier])[0])
-    #try:
-        #server.sendmail(auth, recipient, Constants.MESSAGE)
-    #except smtplib.SMTPRecipientsRefused:
-        #print("Error: Could not send to that address")
+    try:
+        server.sendmail(auth, recipient, Constants.MESSAGE)
+    except smtplib.SMTPRecipientsRefused:
+        print("Error: Could not send to that address")
 
 
 def setup():
@@ -62,7 +62,7 @@ def carrier_setup():
     :return: 0 if no carrier was found, or user-selected cell carrier
 
     """
-    carrier_list = search_carriers()
+    carrier_list = await search_carriers()
     if isinstance(carrier_list, str):
         return carrier_list
     else:
@@ -132,6 +132,8 @@ def search_carriers():
     Otherwise, return a list of the 5 most lexicographically similar strings to Constants.CARRIER from carrier_dictionary
     :return: List close_matches of 5 most lexicographically similar strings to Constants.Carrier OR exact match
     """
+    carrier = FindCellCarrier.get_carrier(Constants.PHONE_NUMBER)
+    print(carrier)
     user_carrier = Constants.CARRIER
     keys = list(carrier_dictionary.keys())
     if user_carrier in keys:
