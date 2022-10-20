@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import Constants
-from SMSTexter import DictChecker, DictReader
+from SMSTexter import DictChecker, DictReader, FindCellCarrier
 
 
 def open_connection(site):
@@ -12,14 +12,14 @@ def open_connection(site):
     :return: Body of website from BeautifulSoup
     """
     response = requests.get(site)
-    if Constants.DEBUG:
-        print(f"Response from \"f{site}\" {response}")
+    # if Constants.DEBUG:
+        # print(f"Response from \"f{site}\" {response}")
     soup = BeautifulSoup(response.content, "html.parser")
-    if Constants.DEBUG:
-        print(f"BeautifulSoup Object Content: {soup}")
+    # if Constants.DEBUG:
+       # print(f"BeautifulSoup Object Content: {soup}")
     body = soup.body
-    if Constants.DEBUG:
-        print(f"BeautifulSoup Body object: {body}")
+   # if Constants.DEBUG:
+       # print(f"BeautifulSoup Body object: {body}")
     return body
 
 
@@ -71,12 +71,12 @@ def create_carrier_dictionary(body):
 
 
 def fetch_carrier_dictionary_local() -> dict:
-    carrier_dict_file = DictChecker.get_csv_dict()
+    carrier_dict_file = DictChecker.has_csv_dict()
     return DictReader.read(carrier_dict_file)
 
 
 def carrier_dictionary():
-    if Constants.DEBUG or (not DictChecker.has_csv_dict()):
+    if Constants.DEBUG or (DictChecker.has_csv_dict() == ""):
         _carrier_dictionary = create_carrier_dictionary(open_connection(Constants.WEBSITE))
         if Constants.DEBUG:
             return fetch_carrier_dictionary_local()
