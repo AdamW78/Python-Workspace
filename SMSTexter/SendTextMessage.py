@@ -28,7 +28,7 @@ def send_message():
     Ex: 1234567890@txt.att.net
     """
     auth = setup()
-    user_carrier = await carrier_setup()
+    user_carrier = carrier_setup()
     recipient = Constants.PHONE_NUMBER + str(list(carrier_dictionary[user_carrier])[0])
     try:
         server.sendmail(auth, recipient, Constants.MESSAGE)
@@ -62,7 +62,7 @@ def carrier_setup():
     :return: 0 if no carrier was found, or user-selected cell carrier
 
     """
-    carrier_list = await search_carriers()
+    carrier_list = search_carriers()
     if isinstance(carrier_list, str):
         return carrier_list
     else:
@@ -122,25 +122,26 @@ def get_carrier_selection(close_matches):
         raise ValueError("User input \"{yes_no}\" was invalid. Please enter \"y\" or \"n\".")
 
 
-def search_carriers():
+def search_carriers() -> str or list:
     """
-    Method to search dictionary of cell carriers to find close matches or exact match for cell carrier from Constants.CARRIER
+    Method to search dictionary of cell carriers to find close matches or exact match for cell carrier from FindCellCarrier.find(number)
 
-    Fetches Constants.Carrier
+    Fetches cell carrier as a string using FindCellCarrier's find method
     Fetches list of cell carriers in carrier_dictionary
-    If Constants.CARRIER is in carrier_dictionary, return Constants.CARRIER
-    Otherwise, return a list of the 5 most lexicographically similar strings to Constants.CARRIER from carrier_dictionary
-    :return: List close_matches of 5 most lexicographically similar strings to Constants.Carrier OR exact match
+    Iterate through carriers in the carrier dictionary carrier-by-carrier
+    If current cell carrier string is in carrier_dictionary, return the current carrier string
+    Else, check if the current carrier string and the found carrier contain each other - if so, add it to close matches
+    Then, return a list of the 5 most lexicographically similar strings to user_carrier from carrier_dictionary
+    :return: List close_matches of 5 most lexicographically similar strings to user_carrier OR exact match
     """
-    carrier = FindCellCarrier.get_carrier(Constants.PHONE_NUMBER)
-    print(carrier)
-    user_carrier = Constants.CARRIER
+    user_carrier = FindCellCarrier.get_carrier(Constants.PHONE_NUMBER)
     keys = list(carrier_dictionary.keys())
-    if user_carrier in keys:
-        return user_carrier
-    else:
-        close_matches = difflib.get_close_matches(user_carrier, list(carrier_dictionary.keys()), n=5, cutoff=0.2)
-        return close_matches
+    for key in keys:
+        if user_carrier == key:
+            return user_carrier
+        elif (key.find(user_carrier) != -1) or (user_carrier.find(key) != -1):
+            return key
+    return difflib.get_close_matches(user_carrier, list(carrier_dictionary.keys()), n=5, cutoff=0.2)
 
 
 def main():

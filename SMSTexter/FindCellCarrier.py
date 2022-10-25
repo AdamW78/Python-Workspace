@@ -12,6 +12,3 @@ def get_carrier(number):
         .phone_numbers(number) \
         .fetch(type=['carrier'])
     return phone_number.carrier['name']
-
-
-print(get_carrier(Constants.PHONE_NUMBER))

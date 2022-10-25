@@ -53,13 +53,13 @@ def create_carrier_dictionary(body):
                 ampersand_search = cur_carrier.find("&amp;")
                 if ampersand_search != -1:
                     cur_carrier = cur_carrier.replace("&amp;", "&")
-                if Constants.DEBUG:
-                    print(f"Found carrier {cur_carrier}, ", end="")
+                # if Constants.DEBUG:
+                #    print(f"Found carrier {cur_carrier}, ", end="")
                 break
         try:
             mail_address = "@" + full_mail_address[1]
-            if Constants.DEBUG:
-                print(f"updating with text-to-email address \"{mail_address}\".")
+            # if Constants.DEBUG:
+            #    print(f"updating with text-to-email address \"{mail_address}\".")
         except IndexError:
             continue
         email_list = []
