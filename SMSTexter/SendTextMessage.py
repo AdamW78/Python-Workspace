@@ -8,13 +8,13 @@
 #
 import smtplib
 import Constants
-import WebScraper
+import CarrierDictLoader
 import difflib
 
 from SMSTexter import FindCellCarrier
 
 server = smtplib.SMTP("smtp.gmail.com", 587)
-carrier_dictionary = WebScraper.carrier_dictionary()
+carrier_dictionary = CarrierDictLoader.carrier_dictionary()
 
 
 def send_message():
@@ -114,7 +114,7 @@ def get_carrier_selection(close_matches):
             raise IndexError(f"User input \"{number_choice}\" was out of bounds for cell carrier list.")
         else:
             print(len(close_matches))
-            carrier_choice = close_matches[num-1]
+            carrier_choice = close_matches[num - 1]
             print(f"Chosen carrier: {carrier_choice}")
             return carrier_choice
     else:
@@ -136,11 +136,25 @@ def search_carriers() -> str or list:
     """
     user_carrier = FindCellCarrier.get_carrier(Constants.PHONE_NUMBER)
     keys = list(carrier_dictionary.keys())
+    close_matches = list()
+    word_match = False
     for key in keys:
         if user_carrier == key:
             return user_carrier
         elif (key.find(user_carrier) != -1) or (user_carrier.find(key) != -1):
             return key
+        if (key.find(' ') != -1) or (user_carrier.find(' ') != -1):
+            key_words = set(key.split(' '))
+            user_carrier_words = set(user_carrier.split(' '))
+            word_matches = key_words.intersection(user_carrier_words)
+            if (word_matches != set()) and (word_matches != {'Wireless'}):
+                close_matches.append(key)
+                word_match = True
+    if word_match:
+        for match in close_matches:
+            if match.find('PCS') != -1 or match.find('Wireless') != -1:
+                return match
+        return close_matches
     return difflib.get_close_matches(user_carrier, list(carrier_dictionary.keys()), n=5, cutoff=0.2)
 
 

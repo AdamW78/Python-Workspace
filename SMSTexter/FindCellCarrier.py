@@ -11,4 +11,5 @@ def get_carrier(number):
         .v1 \
         .phone_numbers(number) \
         .fetch(type=['carrier'])
+    print(phone_number.carrier['name'])
     return phone_number.carrier['name']
