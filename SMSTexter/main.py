@@ -113,7 +113,7 @@ class SMSTexter:
         recipient = f"{phone_number}{list(self.carrier_dictionary[self.cell_carrier])[0]}"
         if not Constants.DRY_RUN:
             try:
-                self.server.sendmail(self.email, recipient, Constants.MESSAGE)
+                self.server.sendmail(Constants.EMAIL, recipient, Constants.MESSAGE)
             except smtplib.SMTPRecipientsRefused:
                 print("Error: Could not send to that address")
         else:

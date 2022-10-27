@@ -1,8 +1,11 @@
 from twilio.rest import Client
-from SMSTexter import Constants
+from SMSTexter import Constants, CacheCellCarrier
 
 
 def get_carrier(number):
+    cache_result = CacheCellCarrier.is_cached(number)
+    if isinstance(cache_result, str):
+        return cache_result
     url = f"https://lookups.twilio.com/v2/PhoneNumbers/{number}"
     account_sid = Constants.TWILIO_SID
     auth_token = Constants.AUTH_TOKEN
@@ -11,5 +14,8 @@ def get_carrier(number):
         .v1 \
         .phone_numbers(number) \
         .fetch(type=['carrier'])
-    print(phone_number.carrier['name'])
-    return phone_number.carrier['name']
+    cell_carrier = phone_number.carrier['name']
+    CacheCellCarrier.cache(number, cell_carrier)
+    if Constants.DEBUG:
+        print(f"Received response from Twilio for {number} - Carrier: {cell_carrier}")
+    return cell_carrier
